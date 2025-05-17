@@ -53,11 +53,65 @@ int addActors(Actor actors[MAX_ACTORS]) {
 }
 
 
-int addMovies(Movie movies[MAX_MOVIES]) {
+
     //TODO: Solicitar el título, año de lanzamiento y director de la película y añadirlo al arreglo. Tened en cuenta que
     // también se ha de solicitar el id de los actores que participen en dicha película. Se deberá en todo momento, preguntar si se desean añadir nuevos actores y/o películas.
     // Se devuelve la cantidad de películas entrados al arreglo.
+int addMovies(Movie movies[MAX_MOVIES]) {
+    int count = 0;
+    char moreMovies = 'y';
+
+    while (moreMovies == 'y' || moreMovies == 'Y') {
+        if (count >= MAX_MOVIES) {
+            printf("Maximum number of movies reached.\n");
+            break;
+        }
+
+        printf("Enter movie title: ");
+        getchar(); // Limpiar salto de línea previo
+        fgets(movies[count].title, MAX_TXT, stdin);
+        size_t len = strlen(movies[count].title);
+        if (len > 0 && movies[count].title[len - 1] == '\n') {
+            movies[count].title[len - 1] = '\0';
+        }
+
+        printf("Enter release year: ");
+        scanf("%d", &movies[count].year);
+
+        getchar(); // Limpiar salto de línea
+        printf("Enter director name: ");
+        fgets(movies[count].director, MAX_TXT, stdin);
+        len = strlen(movies[count].director);
+        if (len > 0 && movies[count].director[len - 1] == '\n') {
+            movies[count].director[len - 1] = '\0';
+        }
+
+        // Añadir actores por ID
+        movies[count].nb_actors = 0;
+        char moreActors = 'y';
+        while ((moreActors == 'y' || moreActors == 'Y') && movies[count].nb_actors < MAX_ACTORS) {
+            printf("Enter actor ID: ");
+            scanf("%d", &movies[count].actors_ids[movies[count].nb_actors]);
+            movies[count].nb_actors++;
+
+            if (movies[count].nb_actors >= MAX_ACTORS) {
+                printf("Maximum number of actors for this movie reached.\n");
+                break;
+            }
+
+            printf("Do you want to add another actor to this movie? (y/n): ");
+            scanf(" %c", &moreActors);
+        }
+
+        count++;
+
+        printf("Do you want to add another movie? (y/n): ");
+        scanf(" %c", &moreMovies);
+    }
+
+    return count;
 }
+
 
 int getIdByName(Actor actors[], int num_actors, char name[]){
     //TODO: Dado un nombre entrado por parámetro, buscar y devolver el id del actor correspondiente al mismo.
