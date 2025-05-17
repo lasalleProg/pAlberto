@@ -169,10 +169,55 @@ void showMoviesByActor(Movie movies[], int num_movies, Actor actors[], int num_a
 }
 
 
-void reportActorsByDirector(Movie movies[], int num_movies, Actor actors[], int num_actors) {
     // TODO: Se ha de solicitar el nombre del director y crear un fichero de texto llamado "reportABD.txt" con el nombre
     //  de los actores que participen en las películas dirigidas por dicho director
+void reportActorsByDirector(Movie movies[], int num_movies, Actor actors[], int num_actors) {
+    char director_name[MAX_TXT];
+    int unique_actor_ids[MAX_ACTORS];
+    int num_unique = 0;
+
+    printf("Enter director name: ");
+    getchar(); // limpiar buffer
+    fgets(director_name, MAX_TXT, stdin);
+    director_name[strcspn(director_name, "\n")] = '\0'; // quitar salto de línea
+
+    // Buscar actores de las películas del director
+    for (int i = 0; i < num_movies; i++) {
+        if (strcmp(movies[i].director, director_name) == 0) {
+            for (int j = 0; j < movies[i].nb_actors; j++) {
+                int actor_id = movies[i].actors_ids[j];
+                // Verificar si ya está guardado
+                int already_added = 0;
+                for (int k = 0; k < num_unique; k++) {
+                    if (unique_actor_ids[k] == actor_id) {
+                        already_added = 1;
+                        break;
+                    }
+                }
+                if (!already_added) {
+                    unique_actor_ids[num_unique++] = actor_id;
+                }
+            }
+        }
+    }
+
+    // Escribir nombres al fichero
+    FILE *file = fopen("reportABD.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    for (int i = 0; i < num_unique; i++) {
+        char name[MAX_TXT];
+        getNameById(actors, num_actors, name, unique_actor_ids[i]);
+        fprintf(file, "%s\n", name);
+    }
+
+    fclose(file);
+    printf("Report saved to reportABD.txt\n");
 }
+
 
 int deleteMovieByYear(Movie movies[], int num_movies) {
     //TODO: Se ha de solicitar el año de la película que se desea eliminar, encontrarlas y quitarlas del arreglo
