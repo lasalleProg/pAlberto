@@ -134,9 +134,40 @@ void getNameById(Actor actors[], int num_actors, char name[], int id) {
     strcpy(name, "Unknown"); // Si no se encuentra el ID
 }
 
-void showMoviesByActor(Movie movies[], int num_movies, Actor actors[], int num_actors) {
+
     //TODO: Se ha de solicitar el nombre del actor y mostrar el listado de películas que son protegonizadas por el mismo.
+void showMoviesByActor(Movie movies[], int num_movies, Actor actors[], int num_actors) {
+    char actor_name[MAX_TXT];
+    int actor_id, found = 0;
+
+    printf("Enter actor name: ");
+    getchar(); // limpiar buffer
+    fgets(actor_name, MAX_TXT, stdin);
+    actor_name[strcspn(actor_name, "\n")] = '\0'; // eliminar salto de línea
+
+    actor_id = getIdByName(actors, num_actors, actor_name);
+
+    if (actor_id == -1) {
+        printf("Actor not found.\n");
+        return;
+    }
+
+    printf("Movies featuring %s:\n", actor_name);
+    for (int i = 0; i < num_movies; i++) {
+        for (int j = 0; j < movies[i].nb_actors; j++) {
+            if (movies[i].actors_ids[j] == actor_id) {
+                printf("- %s (%d), directed by %s\n", movies[i].title, movies[i].year, movies[i].director);
+                found = 1;
+                break;
+            }
+        }
+    }
+
+    if (!found) {
+        printf("No movies found for this actor.\n");
+    }
 }
+
 
 void reportActorsByDirector(Movie movies[], int num_movies, Actor actors[], int num_actors) {
     // TODO: Se ha de solicitar el nombre del director y crear un fichero de texto llamado "reportABD.txt" con el nombre
