@@ -123,8 +123,15 @@ int getIdByName(Actor actors[], int num_actors, char name[]) {
     return -1; // Actor no encontrado
 }
 
-void getNameById(Actor actors[], int num_actors, char name[], int id){
     //TODO: Dado un id entrado por parámetro, buscar el nombre del actor correspondiente al mismo. La variable name, es donde se depositará el nombre del actor encontrado.
+void getNameById(Actor actors[], int num_actors, char name[], int id) {
+    for (int i = 0; i < num_actors; i++) {
+        if (actors[i].id == id) {
+            strcpy(name, actors[i].name);
+            return;
+        }
+    }
+    strcpy(name, "Unknown"); // Si no se encuentra el ID
 }
 
 void showMoviesByActor(Movie movies[], int num_movies, Actor actors[], int num_actors) {
